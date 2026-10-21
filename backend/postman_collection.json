@@ -1,0 +1,366 @@
+{
+  "info": {
+    "_postman_id": "lab2-caso5-techstore-collection",
+    "name": "Laboratorio #2 - Caso 5: TechStore (Node.js + Express + SQLite)",
+    "description": "Colección completa de pruebas para todos los endpoints del Caso 5 (Tienda online con inventario, cupones y envíos), incluyendo casos exitosos y validaciones de errores 400, 404 y 409.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Healthcheck",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3001/api/health",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3001",
+          "path": ["api", "health"]
+        }
+      }
+    },
+    {
+      "name": "1. Productos (CRUD)",
+      "item": [
+        {
+          "name": "Listar Productos (200)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3001/api/productos",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "productos"]
+            }
+          }
+        },
+        {
+          "name": "Filtrar por Categoría (200)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3001/api/productos?categoria=Periféricos",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "productos"],
+              "query": [{ "key": "categoria", "value": "Periféricos" }]
+            }
+          }
+        },
+        {
+          "name": "Detalle Producto Existente (200)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3001/api/productos/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "productos", "1"]
+            }
+          }
+        },
+        {
+          "name": "Detalle Producto Inexistente (404)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3001/api/productos/9999",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "productos", "9999"]
+            }
+          }
+        },
+        {
+          "name": "Crear Producto - Exitoso (201)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Teclado Mecánico RGB Custom\",\n  \"descripcion\": \"Switches ópticos y conectividad inalámbrica 2.4GHz\",\n  \"precio\": 55000,\n  \"stock\": 10,\n  \"categoria\": \"Periféricos\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/api/productos",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "productos"]
+            }
+          }
+        },
+        {
+          "name": "Crear Producto - Inválido (400)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Incompleto sin precio ni stock\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/api/productos",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "productos"]
+            }
+          }
+        },
+        {
+          "name": "Eliminar Producto con Órdenes (409)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3001/api/productos/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "productos", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Clientes",
+      "item": [
+        {
+          "name": "Listar Clientes (200)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3001/api/clientes",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "clientes"]
+            }
+          }
+        },
+        {
+          "name": "Crear Cliente con Email Duplicado (409)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Mauricio Vargas\",\n  \"email\": \"mauricio@techstore.cr\",\n  \"ciudad\": \"San José\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/api/clientes",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "clientes"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Cupones (CRUD y Validación)",
+      "item": [
+        {
+          "name": "Listar Cupones (200)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3001/api/cupones",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "cupones"]
+            }
+          }
+        },
+        {
+          "name": "Validar Cupón Vigente (200)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"TECH10\",\n  \"cliente_id\": 2\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/api/cupones/validar",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "cupones", "validar"]
+            }
+          }
+        },
+        {
+          "name": "Validar Cupón Expirado (409)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"EXPIRED50\",\n  \"cliente_id\": 1\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/api/cupones/validar",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "cupones", "validar"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Órdenes y Transacciones",
+      "item": [
+        {
+          "name": "Crear Orden con Stock Insuficiente (409)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cliente_id\": 1,\n  \"items\": [\n    { \"producto_id\": 4, \"cantidad\": 500 }\n  ]\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/api/ordenes",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "ordenes"]
+            }
+          }
+        },
+        {
+          "name": "Crear Orden Exitosa con Descuento y Envío (201)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cliente_id\": 3,\n  \"cupon_codigo\": \"GAMER15\",\n  \"items\": [\n    { \"producto_id\": 1, \"cantidad\": 1 },\n    { \"producto_id\": 2, \"cantidad\": 1 }\n  ]\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/api/ordenes",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "ordenes"]
+            }
+          }
+        },
+        {
+          "name": "Detalle de Orden con Datos Relacionados (200)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3001/api/ordenes/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "ordenes", "1"]
+            }
+          }
+        },
+        {
+          "name": "Transición de Estado Válida (200)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nuevo_estado\": \"enviada\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/api/ordenes/2/estado",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "ordenes", "2", "estado"]
+            }
+          }
+        },
+        {
+          "name": "Transición de Estado Inválida (409)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nuevo_estado\": \"nueva\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/api/ordenes/1/estado",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "ordenes", "1", "estado"]
+            }
+          }
+        },
+        {
+          "name": "Cancelar Orden y Reponer Stock (200)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3001/api/ordenes/2/cancelar",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "ordenes", "2", "cancelar"]
+            }
+          }
+        },
+        {
+          "name": "Cancelar Orden Ya Cancelada (409)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3001/api/ordenes/4/cancelar",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "ordenes", "4", "cancelar"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Métricas y Resumen",
+      "item": [
+        {
+          "name": "Panel de Métricas y Reto Extra (200)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3001/api/resumen",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "resumen"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
