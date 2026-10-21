@@ -1,0 +1,183 @@
+{
+  "clientName": "Thunder Client",
+  "collectionName": "Laboratorio 2 - Caso 5 (Tienda Online)",
+  "collectionId": "lab2-caso5-techstore",
+  "dateExported": "2026-10-21",
+  "version": "1.1",
+  "folders": [
+    { "name": "1. Productos (CRUD)", "folderId": "fld_prods" },
+    { "name": "2. Clientes", "folderId": "fld_cli" },
+    { "name": "3. Cupones (CRUD y Validación)", "folderId": "fld_cup" },
+    { "name": "4. Órdenes y Transacciones", "folderId": "fld_ord" },
+    { "name": "5. Métricas y Resumen", "folderId": "fld_res" }
+  ],
+  "requests": [
+    {
+      "name": "Healthcheck",
+      "method": "GET",
+      "url": "http://localhost:3001/api/health"
+    },
+    {
+      "name": "Listar Productos (200)",
+      "folderId": "fld_prods",
+      "method": "GET",
+      "url": "http://localhost:3001/api/productos"
+    },
+    {
+      "name": "Filtrar Productos por Categoría (200)",
+      "folderId": "fld_prods",
+      "method": "GET",
+      "url": "http://localhost:3001/api/productos?categoria=Periféricos"
+    },
+    {
+      "name": "Buscar Producto por Texto (200)",
+      "folderId": "fld_prods",
+      "method": "GET",
+      "url": "http://localhost:3001/api/productos?search=Gamer&orden=precio_asc"
+    },
+    {
+      "name": "Detalle Producto Existente (200)",
+      "folderId": "fld_prods",
+      "method": "GET",
+      "url": "http://localhost:3001/api/productos/1"
+    },
+    {
+      "name": "Detalle Producto Inexistente (404)",
+      "folderId": "fld_prods",
+      "method": "GET",
+      "url": "http://localhost:3001/api/productos/9999"
+    },
+    {
+      "name": "Crear Producto - Exitoso (201)",
+      "folderId": "fld_prods",
+      "method": "POST",
+      "url": "http://localhost:3001/api/productos",
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"nombre\": \"Teclado 60% RGB Custom\",\n  \"descripcion\": \"Switches Gateron Yellow lubricados\",\n  \"precio\": 52000,\n  \"stock\": 12,\n  \"categoria\": \"Periféricos\"\n}"
+      }
+    },
+    {
+      "name": "Crear Producto - Inválido (400)",
+      "folderId": "fld_prods",
+      "method": "POST",
+      "url": "http://localhost:3001/api/productos",
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"nombre\": \"Incompleto\"\n}"
+      }
+    },
+    {
+      "name": "Eliminar Producto con Órdenes (409)",
+      "folderId": "fld_prods",
+      "method": "DELETE",
+      "url": "http://localhost:3001/api/productos/1"
+    },
+    {
+      "name": "Listar Clientes (200)",
+      "folderId": "fld_cli",
+      "method": "GET",
+      "url": "http://localhost:3001/api/clientes"
+    },
+    {
+      "name": "Crear Cliente con Email Duplicado (409)",
+      "folderId": "fld_cli",
+      "method": "POST",
+      "url": "http://localhost:3001/api/clientes",
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"nombre\": \"Mauricio Vargas\",\n  \"email\": \"mauricio@techstore.cr\",\n  \"ciudad\": \"San José\"\n}"
+      }
+    },
+    {
+      "name": "Listar Cupones (200)",
+      "folderId": "fld_cup",
+      "method": "GET",
+      "url": "http://localhost:3001/api/cupones"
+    },
+    {
+      "name": "Validar Cupón Vigente (200)",
+      "folderId": "fld_cup",
+      "method": "POST",
+      "url": "http://localhost:3001/api/cupones/validar",
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"codigo\": \"TECH10\",\n  \"cliente_id\": 2\n}"
+      }
+    },
+    {
+      "name": "Validar Cupón Expirado (409)",
+      "folderId": "fld_cup",
+      "method": "POST",
+      "url": "http://localhost:3001/api/cupones/validar",
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"codigo\": \"EXPIRED50\",\n  \"cliente_id\": 1\n}"
+      }
+    },
+    {
+      "name": "Crear Orden con Stock Insuficiente (409)",
+      "folderId": "fld_ord",
+      "method": "POST",
+      "url": "http://localhost:3001/api/ordenes",
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"cliente_id\": 1,\n  \"items\": [\n    { \"producto_id\": 4, \"cantidad\": 500 }\n  ]\n}"
+      }
+    },
+    {
+      "name": "Crear Orden Exitosa con Descuento y Envío (201)",
+      "folderId": "fld_ord",
+      "method": "POST",
+      "url": "http://localhost:3001/api/ordenes",
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"cliente_id\": 3,\n  \"cupon_codigo\": \"GAMER15\",\n  \"items\": [\n    { \"producto_id\": 1, \"cantidad\": 1 },\n    { \"producto_id\": 2, \"cantidad\": 1 }\n  ]\n}"
+      }
+    },
+    {
+      "name": "Detalle de Orden con Datos Relacionados (200)",
+      "folderId": "fld_ord",
+      "method": "GET",
+      "url": "http://localhost:3001/api/ordenes/1"
+    },
+    {
+      "name": "Transición de Estado Válida: nueva -> pagada (200)",
+      "folderId": "fld_ord",
+      "method": "PATCH",
+      "url": "http://localhost:3001/api/ordenes/2/estado",
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"nuevo_estado\": \"enviada\"\n}"
+      }
+    },
+    {
+      "name": "Transición de Estado Inválida (409)",
+      "folderId": "fld_ord",
+      "method": "PATCH",
+      "url": "http://localhost:3001/api/ordenes/1/estado",
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"nuevo_estado\": \"nueva\"\n}"
+      }
+    },
+    {
+      "name": "Cancelar Orden y Reponer Stock (200)",
+      "folderId": "fld_ord",
+      "method": "POST",
+      "url": "http://localhost:3001/api/ordenes/2/cancelar"
+    },
+    {
+      "name": "Cancelar Orden Ya Cancelada (409)",
+      "folderId": "fld_ord",
+      "method": "POST",
+      "url": "http://localhost:3001/api/ordenes/4/cancelar"
+    },
+    {
+      "name": "Métricas del Sistema (GET /api/resumen) (200)",
+      "folderId": "fld_res",
+      "method": "GET",
+      "url": "http://localhost:3001/api/resumen"
+    }
+  ]
+}

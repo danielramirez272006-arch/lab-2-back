@@ -1,0 +1,12 @@
+{
+  "name": "lab-2-techstore-caso5",
+  "version": "1.0.0",
+  "description": "Laboratorio #2 - Caso 5: Tienda online con inventario, cupones, envíos y Agente de IA",
+  "private": true,
+  "scripts": {
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "seed": "npm --prefix backend run seed",
+    "test:backend": "npm --prefix backend run test-endpoints"
+  }
+}

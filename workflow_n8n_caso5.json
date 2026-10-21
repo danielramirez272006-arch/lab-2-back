@@ -1,0 +1,115 @@
+{
+  "name": "TechStore AI Comercial - Caso 5",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "techstore-agente-ia",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "node-webhook-1",
+      "name": "Webhook TechStore",
+      "webhookId": "techstore-agente-ia"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body ? JSON.stringify($json.body) : JSON.stringify($json) }}",
+        "options": {
+          "systemMessage": "Eres el Agente de Inteligencia Artificial Comercial de TechStore (Caso 5).\nTu única función es procesar solicitudes del frontend y devolver texto comercial persuasivo, técnico y conciso en español.\n\nAnaliza el campo 'accion' recibido desde el Webhook:\n\nCASO A: Si accion == 'generar_descripcion'\n- Datos recibidos: 'nombre' y 'categoria'.\n- Tarea: Redacta una descripción comercial atractiva de 20 a 30 palabras que resalte las ventajas técnicas y ergonómicas del producto.\n\nCASO B: Si accion == 'recomendar_carrito'\n- Datos recibidos: 'carrito' (productos que el cliente ya eligió) y 'catalogo_disponible' (inventario de la tienda con precios).\n- Tarea: Selecciona exactamente 2 productos del 'catalogo_disponible' que NO estén en el 'carrito' y que complementen técnicamente la compra actual. Explica en máximo 40 palabras por qué hacen un combo ideal e indica el precio en colones (₡) de cada uno.\n\nRESTRICCIONES DE SALIDA:\n- Devuelve ÚNICAMENTE el texto de la respuesta en español.\n- Prohibido usar bloques Markdown (```), comillas envolventes o saludos introductorios como '¡Claro! Aquí tienes:'."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        260,
+        0
+      ],
+      "id": "node-ai-agent-2",
+      "name": "AI Agent Comercial TechStore"
+    },
+    {
+      "parameters": {
+        "model": "chatgpt-4o-latest",
+        "options": {
+          "temperature": 0.4
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        260,
+        220
+      ],
+      "id": "node-model-chat-3",
+      "name": "Chat Model (OpenAI / Claude / Gemini)"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"ok\": true,\n  \"data\": {{ JSON.stringify($json.output) }}\n}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        560,
+        0
+      ],
+      "id": "node-respond-4",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook TechStore": {
+      "main": [
+        [
+          {
+            "node": "AI Agent Comercial TechStore",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat Model (OpenAI / Claude / Gemini)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent Comercial TechStore",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent Comercial TechStore": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "techstore-caso5-v1",
+  "id": "workflow-caso-5",
+  "tags": []
+}

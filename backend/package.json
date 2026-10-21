@@ -1,0 +1,25 @@
+{
+  "name": "lab-2-back",
+  "version": "1.0.0",
+  "description": "Backend API para Laboratorio #2 - Caso 5: Tienda online con inventario, cupones y envíos",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "seed": "node src/initDb.js",
+    "test-endpoints": "node test-api.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "better-sqlite3": "^13.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.8",
+    "express": "^5.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
