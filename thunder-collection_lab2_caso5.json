@@ -27,13 +27,13 @@
       "name": "Filtrar Productos por Categoría (200)",
       "folderId": "fld_prods",
       "method": "GET",
-      "url": "http://localhost:3001/api/productos?categoria=Periféricos"
+      "url": "http://localhost:3001/api/productos?categoria=MagSafe"
     },
     {
       "name": "Buscar Producto por Texto (200)",
       "folderId": "fld_prods",
       "method": "GET",
-      "url": "http://localhost:3001/api/productos?search=Gamer&orden=precio_asc"
+      "url": "http://localhost:3001/api/productos?search=Cuero&orden=precio_asc"
     },
     {
       "name": "Detalle Producto Existente (200)",
@@ -54,7 +54,7 @@
       "url": "http://localhost:3001/api/productos",
       "body": {
         "type": "json",
-        "raw": "{\n  \"nombre\": \"Teclado 60% RGB Custom\",\n  \"descripcion\": \"Switches Gateron Yellow lubricados\",\n  \"precio\": 52000,\n  \"stock\": 12,\n  \"categoria\": \"Periféricos\"\n}"
+        "raw": "{\n  \"nombre\": \"Estuche Tessel Cuero Vintage\",\n  \"descripcion\": \"Cuero curtido vegetal premium con acabado patina\",\n  \"precio\": 35000,\n  \"stock\": 12,\n  \"categoria\": \"MagSafe\"\n}"
       }
     },
     {

@@ -53,9 +53,9 @@ async function runTests() {
     assert('GET /api/productos retorna 200 y un array', health.status === 200 && Array.isArray(prods.data));
 
     // 3. Filtro por categoría (200)
-    const prodsPerif = await request('GET', '/productos?categoria=Periféricos');
-    const todosPerif = prodsPerif.data.every(p => p.categoria === 'Periféricos');
-    assert('GET /api/productos?categoria=Periféricos filtra correctamente', todosPerif && prodsPerif.data.length > 0);
+    const prodsPerif = await request('GET', '/productos?categoria=MagSafe');
+    const todosPerif = prodsPerif.data.every(p => p.categoria === 'MagSafe');
+    assert('GET /api/productos?categoria=MagSafe filtra correctamente', todosPerif && prodsPerif.data.length > 0);
 
     // 4. Detalle de producto existente (200)
     const prod1 = await request('GET', '/productos/1');
@@ -71,11 +71,11 @@ async function runTests() {
 
     // 7. Crear producto exitosamente (201)
     const nuevoProd = await request('POST', '/productos', {
-      nombre: 'Micrófono USB Podcaster',
-      descripcion: 'Micrófono condensador cardioide con brazo articulado',
+      nombre: 'Estuche Tessel Cuero Vintage Edición Especial',
+      descripcion: 'Cuero curtido vegetal premium con acabado patina y costuras reforzadas',
       precio: 35000,
       stock: 10,
-      categoria: 'Audio'
+      categoria: 'MagSafe'
     });
     assert('POST /api/productos válido retorna 201', nuevoProd.status === 201 && nuevoProd.data.id);
 
@@ -102,7 +102,7 @@ async function runTests() {
     const ordenSinStock = await request('POST', '/ordenes', {
       cliente_id: 1,
       items: [
-        { producto_id: 4, cantidad: 999 } // Stock de Laptop Gamer Nitro 16 es solo 5
+        { producto_id: 4, cantidad: 999 } // Stock de Estuche Tessel Ultra-Slim Fibra de Carbono es solo 5
       ]
     });
     assert('POST /api/ordenes con stock insuficiente retorna 409', ordenSinStock.status === 409 && ordenSinStock.data.error.includes('Stock insuficiente'));
@@ -113,13 +113,13 @@ async function runTests() {
       cliente_id: 5, // Esteban Romero de Puntarenas
       cupon_codigo: 'TECH10',
       items: [
-        { producto_id: 2, cantidad: 2 } // 28000 * 2 = 56000. Descuento 10% = 5600 -> Subtotal 50400 >= 30000 -> Envio gratis
+        { producto_id: 2, cantidad: 2 } // 22000 * 2 = 44000. Descuento 10% = 4400 -> Subtotal 39600 >= 30000 -> Envio gratis
       ]
     });
     const stockDespues = (await request('GET', '/productos/2')).data.stock;
     assert('POST /api/ordenes exitosa retorna 201', ordenValida.status === 201 && ordenValida.data.id);
     assert('Transacción descontó el stock correctamente', stockDespues === stockAntes - 2);
-    assert('Envío gratis aplicado por superar el monto mínimo', ordenValida.data.envio === 0 && ordenValida.data.descuento === 5600);
+    assert('Envío gratis aplicado por superar el monto mínimo', ordenValida.data.envio === 0 && ordenValida.data.descuento === 4400);
 
     // 13. REGLA DE NEGOCIO: Error 409 si el cliente intenta reutilizar el cupón que ya usó
     const ordenCuponReusado = await request('POST', '/ordenes', {
