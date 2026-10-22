@@ -1,5 +1,5 @@
-# Laboratorio #2 - Sistema Integral: TechStore (Caso 5)
-### Tienda Online con Inventario, Cupones, Envíos y Agente de IA Comercial
+# Laboratorio #2 - Sistema Integral: Tessel Cases Studio (Caso 5)
+### Tienda Online de Estuches con Inventario, Cupones, Envíos y Agente de IA Comercial
 
 **Estudiante:** Daniel Ramírez  
 **Stack Tecnológico:**
