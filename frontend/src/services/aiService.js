@@ -19,30 +19,29 @@ export function saveAiConfig(customUrl, mode) {
 export async function callAiAgent(payload) {
   const { customUrl, mode } = getAiConfig();
 
-  // Si está en modo 'live' y hay URL configurada, llamar al Webhook de n8n
+  // Si está en modo 'live' y hay URL configurada, llamar al Webhook de n8n mediante el proxy
   if (mode === 'live' && customUrl) {
     try {
-      const response = await fetch(customUrl, {
+      const response = await fetch('/api/ai/agente', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({
+          webhookUrl: customUrl,
+          payload
+        })
       });
 
-      if (!response.ok) {
-        throw new Error(`El Webhook de n8n respondió con error ${response.status}`);
-      }
-
       const resJson = await response.json();
-      if (typeof resJson === 'string') {
-        return { ok: true, data: resJson };
+      if (!response.ok || !resJson.ok) {
+        throw new Error(resJson.error || `El Agente de n8n devolvió código ${response.status}`);
       }
 
       return {
-        ok: resJson.ok !== undefined ? resJson.ok : true,
-        data: resJson.data || resJson.output || resJson.response || JSON.stringify(resJson),
-        error: resJson.error || null
+        ok: true,
+        data: resJson.data,
+        error: null
       };
     } catch (err) {
       console.warn('⚠️ Falló la llamada a n8n, activando fallback local:', err.message);
@@ -62,8 +61,8 @@ function fallbackAiAgent(payload) {
   if (accion === 'generar_descripcion') {
     const { nombre } = payload;
     const descripciones = [
-      `Potencia tu productividad con ${nombre}. Chasis ergonómico de grado aeroespacial, respuesta táctil inmediata y eficiencia térmica superior para jornadas intensas de rendimiento profesional ininterrumpido.`,
-      `Diseño ergonómico avanzado para confort total. ${nombre} combina componentes de alta durabilidad, conectividad ultrarrápida y precisión milimétrica diseñada para creadores y entusiastas del hardware premium.`
+      `Protección y elegancia absoluta para tu dispositivo con ${nombre}. Chasis bicapa con amortiguación de impacto militar, soporte magnético MagSafe y acabados táctiles refinados para un agarre seguro y sofisticado.`,
+      `Diseño milimétrico y protección de pantalla para ${nombre}. Combina aleaciones ligeras, forro interior de microfibra suave y compatibilidad con carga rápida inalámbrica para una experiencia premium ininterrumpida.`
     ];
     const randomIndex = Math.floor(Math.random() * descripciones.length);
     return {
@@ -77,14 +76,14 @@ function fallbackAiAgent(payload) {
     const carritoIds = new Set(carrito.map(p => p.id || p.producto_id));
     const candidatos = catalogo_disponible.filter(p => !carritoIds.has(p.id) && p.stock > 0);
 
-    const prod1 = candidatos[0] || { nombre: 'Mouse Inalámbrico Ergonómico', precio: 28000 };
-    const prod2 = candidatos[1] || { nombre: 'SSD NVMe 1TB Gen4', precio: 55000 };
+    const prod1 = candidatos[0] || { nombre: 'Estuche Tessel MagSafe Cuero Nórdico', precio: 28000 };
+    const prod2 = candidatos[1] || { nombre: 'Estuche Tessel Armor Anticaídas 3M', precio: 22000 };
 
     const formatearColones = (monto) => `₡${Number(monto).toLocaleString('es-CR')}`;
 
     return {
       ok: true,
-      data: `Completa tu setup con ${prod1.nombre} (${formatearColones(prod1.precio)}) y ${prod2.nombre} (${formatearColones(prod2.precio)}). Maximizan tu ergonomía diaria y transfieren datos al instante, creando la sincronía técnica ideal para alto rendimiento.`,
+      data: `Equipa tu teléfono con el combo ideal: ${prod1.nombre} (${formatearColones(prod1.precio)}) para elegancia ejecutiva y ${prod2.nombre} (${formatearColones(prod2.precio)}) para protección extrema contra impactos diarios.`,
       sugerencias: [prod1, prod2]
     };
   }

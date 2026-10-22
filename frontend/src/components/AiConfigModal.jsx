@@ -20,23 +20,33 @@ export default function AiConfigModal({ onClose, onSaved }) {
     setTestResult(null);
 
     try {
-      const res = await fetch(url.trim(), {
+      const res = await fetch('/api/ai/agente', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          accion: 'generar_descripcion',
-          nombre: 'Test Product',
-          categoria: 'Periféricos'
+          webhookUrl: url.trim(),
+          payload: {
+            accion: 'generar_descripcion',
+            nombre: 'Estuche Tessel MagSafe Cuero Nórdico',
+            categoria: 'MagSafe'
+          }
         })
       });
 
-      if (res.ok) {
-        setTestResult({ type: 'success', message: '¡Conexión exitosa con el Webhook de n8n!' });
+      const resData = await res.json().catch(() => ({}));
+      if (res.ok && resData.ok) {
+        setTestResult({
+          type: 'success',
+          message: '¡Conexión exitosa con el Agente de IA en n8n! Respuesta recibida de DeepSeek.'
+        });
       } else {
-        setTestResult({ type: 'error', message: `El webhook respondió con código ${res.status}. Verifica que el workflow esté activo.` });
+        setTestResult({
+          type: 'error',
+          message: resData.error || `El webhook respondió con código ${res.status}. Asegúrate de activar el workflow en n8n.`
+        });
       }
     } catch (err) {
-      setTestResult({ type: 'error', message: `No se pudo conectar a la URL: ${err.message}` });
+      setTestResult({ type: 'error', message: `No se pudo conectar: ${err.message}` });
     } finally {
       setTesting(false);
     }
@@ -56,8 +66,8 @@ export default function AiConfigModal({ onClose, onSaved }) {
       left: 0,
       right: 0,
       bottom: 0,
-      background: 'rgba(5, 8, 15, 0.8)',
-      backdropFilter: 'blur(8px)',
+      background: 'rgba(15, 23, 42, 0.45)',
+      backdropFilter: 'blur(6px)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -67,8 +77,9 @@ export default function AiConfigModal({ onClose, onSaved }) {
       <div className="glass-card" style={{
         maxWidth: '540px',
         width: '100%',
-        background: '#121826',
-        border: '1px solid rgba(168, 85, 247, 0.4)'
+        background: '#ffffff',
+        border: '1px solid var(--border-strong)',
+        boxShadow: '0 20px 25px -5px rgba(15, 23, 42, 0.15)'
       }}>
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
