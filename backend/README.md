@@ -1,4 +1,4 @@
-# Backend - TechStore (Caso 5)
+# Backend - Tessel Cases Studio (Caso 5)
 API REST desarrollada en Node.js + Express con base de datos SQLite y transacciones atómicas.
 
 ## Comandos rápidos

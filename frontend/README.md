@@ -1,5 +1,5 @@
-# Frontend - TechStore (Caso 5)
-Aplicación SPA en React 19 + Vite + React Router con diseño Vanilla CSS Glassmorphism e integración de Agente de IA Comercial (n8n).
+# Frontend - Tessel Cases Studio (Caso 5)
+Aplicación SPA en React 19 + Vite + React Router con diseño minimalista Tessel e integración de Agente de IA Comercial (n8n).
 
 ## Comandos rápidos
 ```bash
