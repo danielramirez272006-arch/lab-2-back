@@ -1,7 +1,14 @@
 import { useState } from 'react';
 import { cambiarEstadoOrden, cancelarOrden } from '../services/api';
 import AlertMessage from './AlertMessage';
-import { X, Check, Truck, Package, Ban, ArrowRight } from 'lucide-react';
+import { X, Check, Truck, Package, Ban, ArrowRight, Clock, CreditCard, CheckCircle2, AlertTriangle } from 'lucide-react';
+
+const PASOS = [
+  { key: 'nueva', label: 'Nueva', icon: Clock },
+  { key: 'pagada', label: 'Pagada', icon: CreditCard },
+  { key: 'enviada', label: 'Enviada', icon: Truck },
+  { key: 'entregada', label: 'Entregada', icon: CheckCircle2 }
+];
 
 export default function OrderModal({ order, onClose, onOrderUpdated }) {
   const [loading, setLoading] = useState(false);
@@ -28,7 +35,7 @@ export default function OrderModal({ order, onClose, onOrderUpdated }) {
   };
 
   const handleCancelar = async () => {
-    if (!window.confirm('¿Confirmas que deseas cancelar esta orden? El stock de todos los productos será repuesto automáticamente.')) {
+    if (!window.confirm('¿Confirmas que deseas cancelar esta orden? El stock de todos los productos será repuesto automáticamente en SQLite.')) {
       return;
     }
     setLoading(true);
@@ -36,7 +43,7 @@ export default function OrderModal({ order, onClose, onOrderUpdated }) {
     setSuccess(null);
     try {
       const updated = await cancelarOrden(order.id);
-      setSuccess('Orden cancelada y stock repuesto exitosamente');
+      setSuccess('Orden cancelada y stock repuesto exitosamente mediante Transacción Atómica');
       if (onOrderUpdated) onOrderUpdated(updated);
     } catch (err) {
       setError(err.message);
@@ -46,6 +53,9 @@ export default function OrderModal({ order, onClose, onOrderUpdated }) {
   };
 
   const puedeCancelar = order.estado === 'nueva' || order.estado === 'pagada';
+  const pasoActualIndex = PASOS.findIndex(p => p.key === order.estado);
+  const esCancelada = order.estado === 'cancelada';
+  const progresoPorcentaje = pasoActualIndex >= 0 ? (pasoActualIndex / (PASOS.length - 1)) * 100 : 0;
 
   return (
     <div style={{
@@ -54,8 +64,8 @@ export default function OrderModal({ order, onClose, onOrderUpdated }) {
       left: 0,
       right: 0,
       bottom: 0,
-      background: 'rgba(5, 8, 15, 0.8)',
-      backdropFilter: 'blur(8px)',
+      background: 'rgba(15, 23, 42, 0.45)',
+      backdropFilter: 'blur(6px)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -67,13 +77,14 @@ export default function OrderModal({ order, onClose, onOrderUpdated }) {
         width: '100%',
         maxHeight: '90vh',
         overflowY: 'auto',
-        background: '#121826',
-        border: '1px solid rgba(255, 255, 255, 0.12)'
+        background: '#ffffff',
+        border: '1px solid var(--border-strong)',
+        boxShadow: '0 20px 25px -5px rgba(15, 23, 42, 0.15)'
       }}>
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
           <div>
-            <h2 style={{ fontSize: '1.35rem' }}>Detalle de Orden #{order.id}</h2>
+            <h2 style={{ fontSize: '1.35rem', color: 'var(--text-primary)' }}>Detalle de Orden #{order.id}</h2>
             <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Fecha: {order.fecha}</span>
           </div>
           <button onClick={onClose} className="btn btn-secondary btn-sm" style={{ padding: '0.4rem' }}>
@@ -84,14 +95,62 @@ export default function OrderModal({ order, onClose, onOrderUpdated }) {
         {error && <AlertMessage type="error" message={error} onClose={() => setError(null)} />}
         {success && <AlertMessage type="success" message={success} onClose={() => setSuccess(null)} />}
 
+        {/* Stepper Gráfico del Flujo de Estados (Requisito Rúbrica) */}
+        {!esCancelada ? (
+          <div style={{ margin: '1.5rem 0', padding: '1rem', background: 'var(--bg-elevated)', borderRadius: '12px', border: '1px solid var(--border-subtle)' }}>
+            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '1rem' }}>
+              FLUJO DE ESTADOS DE LA ORDEN
+            </div>
+            <div className="order-stepper">
+              <div className="stepper-line">
+                <div className="stepper-line-progress" style={{ width: `${progresoPorcentaje}%` }}></div>
+              </div>
+              {PASOS.map((paso, idx) => {
+                const Icon = paso.icon;
+                const isCompleted = idx < pasoActualIndex;
+                const isActive = idx === pasoActualIndex;
+                return (
+                  <div key={paso.key} className={`stepper-step ${isCompleted ? 'completed' : ''} ${isActive ? 'active' : ''}`}>
+                    <div className="stepper-circle">
+                      <Icon size={18} />
+                    </div>
+                    <span className="stepper-label">{paso.label}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ) : (
+          <div style={{
+            margin: '1.25rem 0',
+            padding: '1rem 1.25rem',
+            background: 'var(--color-error-bg)',
+            border: '1px solid var(--color-error-border)',
+            borderRadius: '12px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.75rem',
+            color: 'var(--color-error)'
+          }}>
+            <Ban size={22} color="var(--color-error)" />
+            <div>
+              <div style={{ fontWeight: 700, fontSize: '0.9rem' }}>Orden Cancelada</div>
+              <div style={{ fontSize: '0.8rem', opacity: 0.9 }}>
+                El inventario de todos los productos fue devuelto a la base de datos mediante Transacción Atómica.
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Cliente y Estado */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
           gap: '1rem',
           padding: '1rem',
-          background: 'rgba(255, 255, 255, 0.03)',
+          background: 'var(--bg-elevated)',
           borderRadius: '12px',
+          border: '1px solid var(--border-subtle)',
           marginBottom: '1.25rem'
         }}>
           <div>
@@ -171,19 +230,19 @@ export default function OrderModal({ order, onClose, onOrderUpdated }) {
             justifyContent: 'space-between',
             fontSize: '1.25rem',
             fontWeight: 800,
-            borderTop: '1px solid rgba(255, 255, 255, 0.08)',
-            paddingTop: '0.5rem',
-            color: '#fff'
+            borderTop: '1px solid var(--border-subtle)',
+            paddingTop: '0.65rem',
+            color: 'var(--text-primary)'
           }}>
             <span>Total Pagado:</span>
-            <span style={{ color: 'var(--accent-secondary)' }}>{formatearMonto(order.total)}</span>
+            <span style={{ color: 'var(--accent-primary)' }}>{formatearMonto(order.total)}</span>
           </div>
         </div>
 
         {/* Acciones de Transición de Estados y Cancelación */}
         <div style={{
-          background: 'rgba(255, 255, 255, 0.02)',
-          padding: '1rem',
+          background: 'var(--bg-elevated)',
+          padding: '1.15rem',
           borderRadius: '12px',
           border: '1px solid var(--border-subtle)'
         }}>

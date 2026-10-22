@@ -361,8 +361,9 @@ export default function CarritoPage() {
                       display: 'flex',
                       justifyContent: 'space-between',
                       alignItems: 'center',
-                      padding: '0.75rem',
-                      background: 'rgba(255, 255, 255, 0.03)',
+                      padding: '0.85rem',
+                      background: 'var(--bg-elevated)',
+                      border: '1px solid var(--border-subtle)',
                       borderRadius: '10px'
                     }}
                   >
@@ -601,15 +602,15 @@ export default function CarritoPage() {
           left: 0,
           right: 0,
           bottom: 0,
-          background: 'rgba(5, 8, 15, 0.8)',
-          backdropFilter: 'blur(8px)',
+          background: 'rgba(15, 23, 42, 0.45)',
+          backdropFilter: 'blur(6px)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           zIndex: 300,
           padding: '1.5rem'
         }}>
-          <div className="glass-card" style={{ maxWidth: '440px', width: '100%', background: '#121826' }}>
+          <div className="glass-card" style={{ maxWidth: '440px', width: '100%', background: '#ffffff', border: '1px solid var(--border-strong)', boxShadow: '0 20px 25px -5px rgba(15, 23, 42, 0.15)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
               <h3 style={{ fontSize: '1.2rem' }}>Registrar Nuevo Cliente</h3>
               <button onClick={() => setShowClienteModal(false)} className="btn btn-secondary btn-sm" style={{ padding: '0.35rem' }}>

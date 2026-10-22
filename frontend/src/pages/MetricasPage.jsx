@@ -78,8 +78,9 @@ export default function MetricasPage() {
           {/* RETO EXTRA OFICIAL: Alertas de reposición basadas en ritmo de ventas de la última semana */}
           <div className="glass-card" style={{
             marginBottom: '2rem',
-            border: '1px solid rgba(245, 158, 11, 0.4)',
-            background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(18, 24, 38, 0.8) 100%)'
+            border: '1px solid #fde68a',
+            background: 'linear-gradient(135deg, #fffbeb 0%, #ffffff 100%)',
+            boxShadow: 'var(--shadow-sm)'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
@@ -158,29 +159,30 @@ export default function MetricasPage() {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
-                        padding: '1rem',
-                        background: 'rgba(255, 255, 255, 0.03)',
+                        padding: '1rem 1.25rem',
+                        background: idx === 0 
+                          ? 'linear-gradient(135deg, #fffbeb 0%, #ffffff 100%)' 
+                          : 'var(--bg-elevated)',
                         borderRadius: '12px',
-                        borderLeft: `4px solid ${idx === 0 ? 'var(--accent-gold)' : (idx === 1 ? '#94a3b8' : '#cd7f32')}`
+                        border: idx === 0 ? '1px solid #fde68a' : '1px solid var(--border-subtle)',
+                        boxShadow: idx === 0 ? '0 4px 12px rgba(217, 119, 6, 0.08)' : 'none'
                       }}
                     >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
                         <span style={{
-                          fontSize: '1.4rem',
-                          fontWeight: 800,
-                          color: idx === 0 ? 'var(--accent-gold)' : (idx === 1 ? '#cbd5e1' : '#d97706'),
-                          minWidth: '24px'
+                          fontSize: '1.6rem',
+                          minWidth: '32px'
                         }}>
-                          #{idx + 1}
+                          {idx === 0 ? '🥇' : (idx === 1 ? '🥈' : '🥉')}
                         </span>
                         <div>
-                          <div style={{ fontWeight: 600 }}>{prod.nombre}</div>
+                          <div style={{ fontWeight: 700, fontSize: '0.975rem' }}>{prod.nombre}</div>
                           <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{prod.categoria}</div>
                         </div>
                       </div>
 
                       <div style={{ textAlign: 'right' }}>
-                        <div style={{ fontWeight: 700, color: 'var(--color-success)' }}>
+                        <div style={{ fontWeight: 800, color: 'var(--color-success)', fontSize: '1rem' }}>
                           {prod.unidades_vendidas} unidades
                         </div>
                         <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>

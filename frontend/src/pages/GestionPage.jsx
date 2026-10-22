@@ -10,7 +10,7 @@ import {
   PackagePlus, Tag, PlusCircle, Edit, Trash2, Sparkles, Loader2, RefreshCw, X, Check, Calendar, Percent, Hash
 } from 'lucide-react';
 
-const CATEGORIAS = ['Periféricos', 'Monitores', 'Computadoras', 'Audio', 'Mobiliario', 'Componentes', 'Accesorios'];
+const CATEGORIAS = ['MagSafe', 'Rugged', 'Madera & Metal', 'Fibra de Carbono', 'Silicona', 'Transparente', 'Billetera Folio', 'Edición Especial'];
 
 export default function GestionPage() {
   const [activeTab, setActiveTab] = useState('productos'); // 'productos' | 'cupones'
@@ -24,7 +24,7 @@ export default function GestionPage() {
   // Formulario Producto
   const [prodForm, setProdForm] = useState({
     nombre: '',
-    categoria: 'Periféricos',
+    categoria: 'MagSafe',
     precio: '',
     stock: '',
     descripcion: ''
@@ -53,7 +53,7 @@ export default function GestionPage() {
 
   // ==================== LOGICA PRODUCTOS ====================
   const resetProdForm = () => {
-    setProdForm({ nombre: '', categoria: 'Periféricos', precio: '', stock: '', descripcion: '' });
+    setProdForm({ nombre: '', categoria: 'MagSafe', precio: '', stock: '', descripcion: '' });
     setEditandoProdId(null);
     setFormError(null);
     setFormSuccess(null);
@@ -292,7 +292,7 @@ export default function GestionPage() {
                   <input
                     type="text"
                     className="form-input"
-                    placeholder="Ej. Teclado Mecánico RGB Pro"
+                    placeholder="Ej. Estuche MagSafe Cuero Nórdico"
                     value={prodForm.nombre}
                     onChange={(e) => setProdForm({ ...prodForm, nombre: e.target.value })}
                     required
